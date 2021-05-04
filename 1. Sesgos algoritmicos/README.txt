@@ -11,6 +11,7 @@ Se emplearon las etiquetas de la biblioteca para clasificar la etnicidad tal com
 "White, Black, Asian, Inidan y others (like Hispanic, Latino, Middle Eastern)"
 
 Se filtro el data set para optimizar el tiempo de entrenamiento ominiento las imágenes de menores de edad de 0-17 años.
+Dataset filtrado: https://drive.google.com/file/d/1GGed3fmDt0vHfvxoIqSd8lQOKgLAploy/view?usp=sharing
 
 El modelo se entreno utilizando: https://teachablemachine.withgoogle.com/
 
