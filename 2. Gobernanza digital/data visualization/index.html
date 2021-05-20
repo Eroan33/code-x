@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Ejemplo de Mapbox</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+<style>
+	body { margin: 0; padding: 0; }
+	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+	<div id="map"></div>
+		<script>
+			mapboxgl.accessToken = 'pk.eyJ1IjoibGVvbmFyZG9hcmFuZGEiLCJhIjoiWmFJQlNVUSJ9.gbr0w648c38no1-ecIRRRA';//token del usuario 
+			var map = new mapboxgl.Map({//crea una instancia del objeto mapa
+				container: 'map', // nombre del div contenedor
+				style: 'mapbox://styles/leonardoaranda/cjv4nhjks7x2c1fpc2sxvzks3', // URL del estilo del mapa
+				center: [-111.093735, 34.048927], // posicion inicial del mapa
+				zoom: 6 // zoom inicial del mapa
+			});
+			map.addControl(new mapboxgl.NavigationControl());//añade controles al mapa
+			map.on('load', function () { // instrucciones a ejecutar cuando el mapa es cargado
+				map.addSource('decesos', { //añade una fuente de información con el nombre de 'decesos'
+					type: 'geojson',
+					//cluster: true, //agrupa en conjuntos los elementos de esta fuente de información
+					data: 'ogis_migrant_deaths.geojson'//url del geojson a utilizar para esta fuente de información
+				});
+
+				map.addSource('arizona', {//añade una fuente de información con el nombre de 'arizona'
+					type: 'geojson',
+					data: 'azcounties.geojson'//url del geojson a utilizar para esta fuente de información
+				});
+				map.addLayer({//añade una capa al mapa
+					'id': 'arizona-layer', //nombre de la capa
+					'type': 'fill', //tipo de capa, puede ser fill, line, symbol, circle, heatmap, "fill-extrusion", "raster", "hillshade", "background", "sky"
+					'source': 'arizona',//nombre de la fuente a partir de la cual se creara la capa
+					'paint': {//elementos de estilo de la capa
+						'fill-color': 'rgba(50, 50, 240, 0.2)',//color de relleno
+						'fill-outline-color': 'rgba(200, 100, 240, 1)'//color de contorno
+					}
+				});	 
+				map.addLayer({//añade una capa al mapa
+					'id': 'decesos-layer', //nombre de la capa
+					'type': 'symbol',//tipo de capa, puede ser fill, line, symbol, circle, heatmap, "fill-extrusion", "raster", "hillshade", "background", "sky"
+					'source': 'decesos',//nombre de la fuente a partir de la cual se creara la capa
+					'layout': {//elementos de estilo de la capa
+						'icon-image': "{Sex}", //icono correspondiente. Toma el icono de la propiedad Sex del geojson
+						'icon-size':.5,//tamaño: 0-1 
+						'icon-allow-overlap':true //permitir que se encimen iconos
+					}
+				});
+				/*
+				map.addLayer({
+					'id': 'muertes-layer',//nombre de la capa
+					'type': 'circle',//tipo de capa, puede ser fill, line, symbol, circle, heatmap, "fill-extrusion", "raster", "hillshade", "background", "sky"
+					'source': 'decesos',
+					'paint': {//elementos de estilo de la capa
+						'circle-radius': 8,//radio del circulo
+						'circle-stroke-width': 2,//ancho del contorno del circulo
+						'circle-color': 'red',//color de relleno del circulo
+						'circle-stroke-color': 'white'//color de contorno del circulo
+						}
+				});*/
+				map.on('click', 'decesos-layer', function (e) {//funciones a ejecutar cuando se hace click sobre algun elemento de la capa decesos
+				new mapboxgl.Popup()//crea un popup
+					.setLngLat(e.lngLat)//toma las cordenadas del elemento presionado para el popopup
+					.setHTML("Nombre:<br>"+e.features[0].properties.Name)//texto contenido dentro del popup
+					.addTo(map);//añade el popup al mapa
+				});
+				 
+				
+				map.on('mouseenter', 'decesos-layer', function () {//funciones a ejecutar cuando el mouse entra sobre algun elemento de la capa decesos
+					map.getCanvas().style.cursor = 'pointer';//cambia el cursoso por el icono de 'pointer'
+				});
+				 
+				
+				map.on('mouseleave', 'decesos-layer', function () {//funciones a ejecutar cuando el mouse sale de algun elemento de la capa decesos
+					map.getCanvas().style.cursor = '';//cambia el cursoso por el icono por default
+				});
+		
+	});
+</script>
+ 
+</body>
+</html>
